@@ -1,11 +1,11 @@
 class TreeNode
-   attr_accessor :value, :left, :right
+  attr_accessor :value, :left, :right
 
-   def initialize(val)
-     @value = val
-     @left = nil
-     @right = nil
-   end
+  def initialize(val)
+    @value = val
+    @left = nil
+    @right = nil
+  end
 end
 
 def print_infix(node)
@@ -37,21 +37,34 @@ def operators(node)
 end
 
 # method that returns the count of non-operators (in this case, leaves)
-def leaves(node)
-  return 1 if node.left.nil? && node.right.nil?
-  leaves(node.left) + leaves(node.right)
+def leaves(node, depth=0)
+  if node.left.nil? && node.right.nil?
+    puts "#{node.value}, depth: #{depth}"
+    return 1
+  else
+    leaves(node.left, depth+1) + leaves(node.right, depth+1)
+  end
 end
 
 # method that returns whether a given operator exists in the tree
 def includes_op(node, op)
-  return true if node.value == op
+  return 1 if node.value == op
   if !node.left.nil? && !node.right.nil?
-    includes_op(node.left, op) || includes_op(node.right, op)
+    includes_op(node.left, op) + includes_op(node.right, op)
   else
-    return false
+    return 0
   end
 end
 
+def op_count(node, op)
+  count = 0
+  unless node.left.nil?
+    count += op_count(node.left, op)
+    count += op_count(node.right, op)
+  end
+  count += 1 if node.value == op
+  return count
+end
 
 ################################################
 # print all the things
@@ -103,6 +116,8 @@ puts "includes operator '+'?"
 puts includes_op(root2, '+')
 puts "includes operator '%'?"
 puts includes_op(root2, '%')
+puts "count of + operators:"
+puts op_count(root2, '+')
 puts("*" * 30)
 
 root3 = TreeNode.new("-")
