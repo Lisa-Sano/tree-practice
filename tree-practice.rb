@@ -48,11 +48,11 @@ end
 
 # method that returns whether a given operator exists in the tree
 def includes_op(node, op)
-  return 1 if node.value == op
+  return true if node.value == op
   if !node.left.nil? && !node.right.nil?
-    includes_op(node.left, op) + includes_op(node.right, op)
+    includes_op(node.left, op) || includes_op(node.right, op)
   else
-    return 0
+    return false
   end
 end
 
